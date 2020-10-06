@@ -1,0 +1,16 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    height: 100%;
+}
+.destination {
+    position: absolute;
+    top: 10;
+    left: 10;
+}
+.form-control:not(:first-child) {
+    margin-top: 10px !important;
+}
