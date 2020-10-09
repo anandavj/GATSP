@@ -2,75 +2,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Genetic Algorithm</title>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMsre3-QD8fXCNNq-sV0geAe5u_ZBJOEY&callback=initMap&libraries=&v=weekly" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.1.7/chance.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="City.js"></script>
+    <script src="Route.js"></script>
     <script src="app.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="map"></div>
-    <div class="card destination" style="width: 25rem;">
+    <div class="card cardfloat" style="width: 20rem;">
         <div class="card-body">
-            <h5 class="card-title">Choose your plan today with us!</h5>
-            <select class="form-control" id="destOne">
-                <option selected value="0">Place 1</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
-            <select class="form-control" id="destTwo">
-                <option selected value="0">Place 2</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
-            <select class="form-control" id="destThree">
-                <option selected value="0">Place 3</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
-            <select class="form-control" id="destFour">
-                <option selected value="0">Place 4</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
-            <select class="form-control" id="destFive">
-                <option selected value="0">Place 5</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
-            <select class="form-control" id="destSix">
-                <option selected value="0">Place 6</option>
-                <option value="1">Mall</option>
-                <option value="2">School</option>
-                <option value="3">Hospital</option>
-                <option value="4">Supermarket</option>
-                <option value="5">Bookstore</option>
-                <option value="6">Restaurant</option>
-            </select>
+            <input class="form-control" id="popSize"  type="text" placeholder="Population Size / Generation">
+            <!-- <input class="form-control" id="places"  type="text" placeholder="Places"> -->
+            <input class="form-control" id="generations"  type="text" placeholder="Generation">
+            <input class="form-control" id="mutRate"  type="text" placeholder="Mutation Rate">
+            <input class="form-control" id="eliteSize"  type="text" placeholder="Elite Size">
+            <button onclick="calculateGA()" type="button" class="btn btn-success" style="margin-top: 15px; width: 100%;">Calculate</button>
         </div>
     </div>
+    <div id="chartContainer" class="charts"  style="height: 300px; width: 100%;"></div>
 </body>
+<script>
+    
+</script>
 </html>
