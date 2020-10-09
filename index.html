@@ -20,12 +20,16 @@
     <div id="map"></div>
     <div class="card cardfloat" style="width: 20rem;">
         <div class="card-body">
-            <input class="form-control" id="popSize"  type="text" placeholder="Population Size / Generation">
+            <label for="popSize">Population Size</label>
+            <input class="form-control" id="popSize"  type="text" placeholder="Contoh: 100">
             <!-- <input class="form-control" id="places"  type="text" placeholder="Places"> -->
-            <input class="form-control" id="generations"  type="text" placeholder="Generation">
-            <input class="form-control" id="mutRate"  type="text" placeholder="Mutation Rate">
-            <input class="form-control" id="eliteSize"  type="text" placeholder="Elite Size">
-            <button onclick="calculateGA()" type="button" class="btn btn-success" style="margin-top: 15px; width: 100%;">Calculate</button>
+            <label for="generations">Generation Size</label>
+            <input class="form-control" id="generations"  type="text" placeholder="Contoh: 100">
+            <label for="mutRate">Mutation Rate</label>
+            <input class="form-control" id="mutRate"  type="text" placeholder="Contoh: 0.001">
+            <label for="eliteSize">Elite Size</label>
+            <input class="form-control" id="eliteSize"  type="text" placeholder="Contoh: 1">
+            <button onclick="calculateGA()" type="button" class="btn btn-success" style="margin-top: 15px; width: 100%;">Trip On!</button>
         </div>
     </div>
     <div id="chartContainer" class="charts"  style="height: 300px; width: 100%;"></div>

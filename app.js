@@ -7,7 +7,7 @@ let matingPool = []
 let val = 1
 let finalResult
 let populationSize = 200
-let markerPopulation = 10
+let markerPopulation = 15
 let generationSize = 500 //stopping condition
 let mutationRate = 0.01
 let eliteSize = 1
@@ -220,7 +220,7 @@ let styleMap = [
   ]
 function initMap() {
     let option = {
-        center: { lat: -7.047821, lng: 110.418219 },
+        center: { lat: -8.643701, lng: 115.187480 },
         zoom: 14,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         disableDefaultUI: true,
@@ -325,18 +325,20 @@ function geneticAlgorithm() {
     ].join(';');
 
     console.log("%c Best First Distance: " + best[0].y, styles)
-    console.log("%c Best Last Distance: " + best[populationSize-1].y, styles)
+    console.log("%c Best Last Distance: " + best[generationSize-1].y, styles)
 
     // Find the last best
     finalResult = _.find(population[generationSize-1], function(o) {
         return o.distance == _.min(tempDistance)
     })
+    
 
     // Draw
     let coord = []
     finalResult.city.forEach(e => {
         coord.push({lat:e.lat,lng:e.lng})
     }); coord.push({lat:finalResult.city[0].lat,lng:finalResult.city[0].lng})
+    
     var line= new google.maps.Polyline({
         path: coord,
         geodesic: true,
@@ -347,35 +349,52 @@ function geneticAlgorithm() {
     line.setMap(map);
 
     // Draw driving direction
-    // var request = {travelMode: google.maps.TravelMode.DRIVING}
-    // for(let x=0; x<coord.length; x++) {
-    //     if(x==0) {
-    //         request.origin = coord[x]
-    //     } else {
-    //         if(x==coord.length-1) {
-    //             request.destination = coord[x]
-    //         } else {
-    //             // Kalo cuma 2 marker
-    //             if(!request.waypoints) {
-    //                 request.waypoints = []
-    //             }
-    //             // Push Marker waypoint
-    //             request.waypoints.push({
-    //                 location: coord[x],
-    //                 stopover: true
-    //             })
-    //         }
-    //     }
-    // }
-    // var directionsDisplay = new google.maps.DirectionsRenderer()
-    // var directionsService = new google.maps.DirectionsService()
-    // directionsDisplay.setMap(map);
-    // directionsService.route(request, function(result, status) {
-    //     var total = 0
-    //     if (status == google.maps.DirectionsStatus.OK) {
-    //         directionsDisplay.setDirections(result);
-    //     }
-    // })
+    var request = {travelMode: google.maps.TravelMode.DRIVING}
+    for(let x=0; x<coord.length; x++) {
+        if(x==0) {
+            request.origin = coord[x]
+        } else {
+            if(x==coord.length-1) {
+                request.destination = coord[x]
+            } else {
+                // Kalo cuma 2 marker
+                if(!request.waypoints) {
+                    request.waypoints = []
+                }
+                // Push Marker waypoint
+                request.waypoints.push({
+                    location: coord[x],
+                    stopover: true
+                })
+            }
+        }
+    }
+    var directionsDisplay = new google.maps.DirectionsRenderer()
+    var directionsService = new google.maps.DirectionsService()
+    directionsDisplay.setMap(map);
+    directionsService.route(request, function(result, status) {
+        var total = 0
+        if (status == google.maps.DirectionsStatus.OK) {
+            directionsDisplay.setDirections(result);
+        }
+    })
+
+    let random = []
+    for(let x = 0; x < 3; x++) {
+      let a = Math.floor(Math.random() * (finalResult.city.length-1))
+      while(random.includes(a)) {
+        a = Math.floor(Math.random() * (finalResult.city.length-1))
+      }
+      random.push(a)
+      var marker = new google.maps.Marker({
+        position: {lat:finalResult.city[a].lat,lng:finalResult.city[a].lng},
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+        },
+        map: map
+      });
+    }
 }
 
 function crossover(routeOne, routeTwo) {
