@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Genetic Algorithm</title>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMsre3-QD8fXCNNq-sV0geAe5u_ZBJOEY&callback=initMap&libraries=&v=weekly" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMsre3-QD8fXCNNq-sV0geAe5u_ZBJOEY&callback=initMap&libraries=places&v=weekly" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.1.7/chance.min.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
@@ -28,8 +28,16 @@
             <label for="mutRate">Mutation Rate</label>
             <input class="form-control" id="mutRate"  type="text" placeholder="Contoh: 0.001">
             <label for="eliteSize">Elite Size</label>
-            <input class="form-control" id="eliteSize"  type="text" placeholder="Contoh: 1">
+            <input class="form-control" id="eliteSize" type="text" placeholder="Contoh: 1">
             <button onclick="calculateGA()" type="button" class="btn btn-success" style="margin-top: 15px; width: 100%;">Trip On!</button>
+        </div>
+    </div>
+    <div class="card best" style="width: 20rem;">
+        <div class="card-body">
+            <h5 class="card-title">First Best Distance</h5>
+            <h5 class="card-title" id="firstDistance" style="color: red"></h5>
+            <h5 class="card-title">Last Best Distance</h5>
+            <h5 class="card-title" id="lastDistance" style="color: red"></h5>
         </div>
     </div>
     <div id="chartContainer" class="charts"  style="height: 300px; width: 100%;"></div>

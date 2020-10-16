@@ -15,6 +15,12 @@ html, body {
     top: 10;
     left: 10;
 }
+.best {
+    position: absolute;
+    top: 10;
+    right: 10;
+    display: none;
+}
 label:not(:first-child) {
     margin-top: 15px;;
 }

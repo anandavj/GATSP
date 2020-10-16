@@ -13,6 +13,7 @@ let mutationRate = 0.01
 let eliteSize = 1
 let markerCount = 0
 let best = []
+let hotelNearby = []
 let styleMap = [
     {
       "elementType": "geometry",
@@ -224,7 +225,7 @@ function initMap() {
         zoom: 14,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         disableDefaultUI: true,
-        styles: styleMap
+        // styles: styleMap
     }
     map = new google.maps.Map(document.getElementById('map'),option)
     map.addListener("click", (e) => {
@@ -237,20 +238,30 @@ function initMap() {
             cityList.push(new City(e.latLng.lat(), e.latLng.lng()))
             markerCount++
         } 
-        // else {
-        //     geneticAlgorithm()
-        // }
     })
 }
 
 function calculateGA() {
     populationSize = document.getElementById("popSize").value
-    // markerPopulation = document.getElementById("places").value
     generationSize = document.getElementById("generations").value
     mutationRate = document.getElementById("mutRate").value
-    eliteSize = document.getElementById("eliteSize").value
     geneticAlgorithm()
     showDataChart()
+    // Kasi timeout 3 detik karena tidak tau kenapa async semua fungsi yang dijalanin, kalau ndak dikasi timeout nanti hotelNearby nya belum keiisi
+    setTimeout(() => {
+      for (let x = 0; x < hotelNearby.length; x++) {
+        var marker = new google.maps.Marker({
+          position: {lat:finalResult.city[hotelNearby[x]].lat,lng:finalResult.city[hotelNearby[x]].lng},
+          icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 10,
+          },
+          map: map
+        });
+        
+      }
+    }, 3000);
+
 }
 
 function initPopulation() {
@@ -326,6 +337,9 @@ function geneticAlgorithm() {
 
     console.log("%c Best First Distance: " + best[0].y, styles)
     console.log("%c Best Last Distance: " + best[generationSize-1].y, styles)
+    document.getElementById("firstDistance").textContent = best[0].y
+    document.getElementById("lastDistance").textContent = best[generationSize-1].y
+    document.getElementsByClassName("best")[0].style.display = "block"
 
     // Find the last best
     finalResult = _.find(population[generationSize-1], function(o) {
@@ -379,26 +393,37 @@ function geneticAlgorithm() {
         }
     })
 
-    let random = []
-    for(let x = 0; x < 3; x++) {
-      let a = Math.floor(Math.random() * (finalResult.city.length-1))
-      while(random.includes(a)) {
-        a = Math.floor(Math.random() * (finalResult.city.length-1))
-      }
-      random.push(a)
-      var marker = new google.maps.Marker({
-        position: {lat:finalResult.city[a].lat,lng:finalResult.city[a].lng},
-        icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 10,
-        },
-        map: map
-      });
+    // let random = []
+    for(let x = 0; x < finalResult.city.length; x++) {
+      // let a = Math.floor(Math.random() * (finalResult.city.length-1))
+      // while(random.includes(a)) {
+      //   a = Math.floor(Math.random() * (finalResult.city.length-1))
+      // }
+      // random.push(a)
+      getNearbyHotels({lat:finalResult.city[x].lat,lng:finalResult.city[x].lng},x)
     }
+}
+
+function getNearbyHotels(position,idx) {
+  var service = new google.maps.places.PlacesService(map);
+  // Di google maps hotel/penginapan dikategorikan lodging
+  // radius 300 meter dari titik
+  let request = {
+    location : position,
+    radius : 300,
+    type : [ 'lodging' ]
+  }
+  service.nearbySearch(request, (results, status) => {
+    if(results.length > 0) {
+      hotelNearby.push(idx)
+    }
+  })
 }
 
 function crossover(routeOne, routeTwo) {
     child = []
+
+    // Metode Crossover buatan sendiri
     // childOne = _.cloneDeep(routeOne.city)
     // childTwo = _.cloneDeep(routeTwo.city)
     // let randomAlpha = Math.floor(Math.random() * (routeOne.city.length-2))
@@ -411,13 +436,18 @@ function crossover(routeOne, routeTwo) {
     // childTwo[randomAlpha] = tmpOne
     // child.push(childOne,childTwo)
     // return child
+
     // Order Crossover
     let indexRouteOne = []
     let indexRouteTwo = []
+    // Ubah real ke permutasi (index)
     for(let i=0; i<cityList.length; i++) {
+        // cari index tiap city yang ada pada routeOne di list cityList, lalu push indexnya
         indexRouteOne.push(_.findIndex(cityList, function(o) { return (o.lat == routeOne.city[i].lat && o.lng == routeOne.city[i].lng) }))
+        // cari index tiap city yang ada pada routeTwo di list cityList, lalu push indexnya
         indexRouteTwo.push(_.findIndex(cityList, function(o) { return (o.lat == routeTwo.city[i].lat && o.lng == routeTwo.city[i].lng) }))
     }
+    // ambil titik acak yang dijadikan subset
     let geneA = Math.floor(Math.random() * (routeOne.city.length-1))
     let geneB = Math.floor(Math.random() * (routeOne.city.length-1))
     let startGene = Math.min(geneA,geneB)
@@ -428,10 +458,12 @@ function crossover(routeOne, routeTwo) {
         subOne.push(indexRouteOne[i])
         subTwo.push(indexRouteTwo[i])
     }
+    // order crossover
     let tempOne = order(indexRouteOne,indexRouteTwo,subOne.join(' '))
     let tempTwo = order(indexRouteTwo,indexRouteOne,subTwo.join(' '))
     let childA = []
     let childB = []
+    // buat index tadi ke bentuk real (lat lng)
     for(let i=0; i<cityList.length; i++) {
         childA.push(cityList[tempOne[i]])
         childB.push(cityList[tempTwo[i]])
