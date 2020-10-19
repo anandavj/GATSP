@@ -19,9 +19,6 @@ class Route {
     }
 
     mutate(mutationRate) {
-        // if(Math.random(1) < mutationRate) {
-        //     _.shuffle(this.city)
-        // }
         for (let i = 0; i < this.city.length; i++) {
             if(Math.random(1) < mutationRate) {
                 let randomIndex = Math.floor(Math.random(this.city.length))

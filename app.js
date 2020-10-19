@@ -14,6 +14,7 @@ let eliteSize = 1
 let markerCount = 0
 let best = []
 let hotelNearby = []
+// styling google maps
 let styleMap = [
     {
       "elementType": "geometry",
@@ -228,6 +229,7 @@ function initMap() {
         // styles: styleMap
     }
     map = new google.maps.Map(document.getElementById('map'),option)
+    // Set marker setiap ngeklik di map, dan langsung buat objek city
     map.addListener("click", (e) => {
         if(markerCount!=markerPopulation) {
             const marker = new google.maps.Marker({
@@ -295,34 +297,40 @@ function geneticAlgorithm() {
         }
         // matingPool -> 100 route yang udah di random weight
         // Breeding
-        
         let tempChild = []
         let sorted = _.slice(_.sortBy(population[i], ['distance']), [start=0], [end=eliteSize])
         for (let x = 0; x < ((population[i].length/2)); x++) {
+            // Fungsi sample buat ngambil index acak
             let tempOne = _.sample(matingPool)
             let tempTwo = _.sample(matingPool)
+            // jaga jaga menggunakan clonedeep karena sering terjadi setiap copy ke variabel, malah ke copy reference bukan value
             let cloneOne = _.cloneDeep(tempOne)
             let cloneTwo = _.cloneDeep(tempTwo)
+            // Crossover, hasil dari crossover adalah array isinya 2, yaitu child 1 dan child 2
             let child = crossover(cloneOne,cloneTwo)
             cloneOne.city = child[0]
             cloneTwo.city = child[1]
+            // mutate - cek route.js
             cloneOne.mutate(mutationRate)
             cloneTwo.mutate(mutationRate)
             tempChild.push(cloneOne,cloneTwo)
         }
+        // keluarin anak dari array sebanyak eliteSize
         for(let x = 0; x<eliteSize; x++) {
             tempChild.pop()
         }
+        // Masukkin parent terbaik ke array sebanyak eliteSize
         for(let x=0; x<eliteSize; x++) {
-            // sorted[x].mutate(mutationRate)
             tempChild.push(sorted[x])
         }
         console.log(population)
         console.log("%c The best Distance in generation " + i + ": " + _.min(tempDistance), 'background: green; color: white; display: block;')
         population.push(tempChild)
+        // Ngepush distance terkecil ke array best (nanti ini buat keperluan grafik)
         best.push({y:_.min(tempDistance)})
     }
 
+    // Styling console.log
     var styles = [
         'background: linear-gradient(#D33106, #571402)'
         , 'border: 1px solid #3E0E02'
@@ -342,6 +350,7 @@ function geneticAlgorithm() {
     document.getElementsByClassName("best")[0].style.display = "block"
 
     // Find the last best
+    // Jadi ini last best buat nanti sebagai patokan google maps drawing jalur nya
     finalResult = _.find(population[generationSize-1], function(o) {
         return o.distance == _.min(tempDistance)
     })
@@ -353,6 +362,7 @@ function geneticAlgorithm() {
         coord.push({lat:e.lat,lng:e.lng})
     }); coord.push({lat:finalResult.city[0].lat,lng:finalResult.city[0].lng})
     
+    // Ini draw yang garis2 merah itu
     var line= new google.maps.Polyline({
         path: coord,
         geodesic: true,
@@ -393,13 +403,7 @@ function geneticAlgorithm() {
         }
     })
 
-    // let random = []
     for(let x = 0; x < finalResult.city.length; x++) {
-      // let a = Math.floor(Math.random() * (finalResult.city.length-1))
-      // while(random.includes(a)) {
-      //   a = Math.floor(Math.random() * (finalResult.city.length-1))
-      // }
-      // random.push(a)
       getNearbyHotels({lat:finalResult.city[x].lat,lng:finalResult.city[x].lng},x)
     }
 }
@@ -423,7 +427,7 @@ function getNearbyHotels(position,idx) {
 function crossover(routeOne, routeTwo) {
     child = []
 
-    // Metode Crossover buatan sendiri
+    // Metode Crossover buatan sendiri, perlu dikembangkan lagi semisal bagus
     // childOne = _.cloneDeep(routeOne.city)
     // childTwo = _.cloneDeep(routeTwo.city)
     // let randomAlpha = Math.floor(Math.random() * (routeOne.city.length-2))
